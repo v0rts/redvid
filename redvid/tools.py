@@ -55,6 +55,11 @@ def getSizes(u, h, p, vs):
         )
     return sizes
 
+def getMaxMinQualities(page, vredd_url):
+    regex = rf'{vredd_url}(DASH_)(\d+)(\.mp4)'
+    Match = re.findall(regex, page.text)
+    return Match
+
 # v1.1.1: if 'vcf.redd.it' in <BASEURL>
 # we extract DASH quality names and store them in
 # the same form of original re.findall result
@@ -69,30 +74,34 @@ def vcfRemover(BaseUrls, rgx):
     )
     return list(convertToReTags)
 
-def mpdParse(mpd):
-    # v1.0.8: Fix for new reddit mechanism
-    tags = r'<BaseURL>(DASH_)?(.*?)(\.mp4)?</BaseURL>'
-    re_tags = re.findall(tags, mpd)
+def mpdParse(mpd, custom_video_qualities=[]):
+    # v2.0.1: Fix for new reddit mechanism
+    tags = r'<BaseURL>(DASH_)(?!vtt)(.*?)(\.mp4)?</BaseURL>'
+    tags_a = r'<BaseURL>(audio)(\.mp4)?</BaseURL>'
+    re_tags = re.findall(tags, mpd) + re.findall(tags_a, mpd)
 
     # v1.1.1: Fix Base Urls from vcf.redd.it
     if any('vcf.redd.it' in j(i) for i in re_tags):
         re_tags = vcfRemover(re_tags, tags)
 
     # Filter audio tag
-    tag_aud = None
-    for tag in re_tags:
-        if 'audio' in tag:
-            tag_aud = tag
-            re_tags.remove(tag)
-    
+    audio_tags = [tag for tag in re_tags if 'audio' in j(tag).lower()]
+    video_tags = list(set(re_tags) - set(audio_tags))
+    tag_aud = audio_tags[-1] if audio_tags else None
+
+    # v2.0.5: Adding max and min qualities
+    for quality in custom_video_qualities:
+        if quality not in video_tags:
+            video_tags.append(quality)
+
     if not re_tags:
         return 0, 0
 
     # Allow getting qualities with old reddit method
     try:
-        yield sorted(re_tags, key=lambda a: int(a[1]))[::-1]
+        yield sorted(video_tags, key=lambda a: int(a[1]))[::-1]
     except:
-        yield sorted(re_tags, key=lambda a: a[1])[::-1]
+        yield sorted(video_tags, key=lambda a: a[1])[::-1]
 
     yield tag_aud
 

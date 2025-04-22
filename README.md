@@ -8,11 +8,14 @@
 <h4 align="center">Smart Downloader for Reddit Hosted Videos</h4>
 
 <p align=center>
-  <a target="_blank" href="https://travis-ci.org/elmoiv/redvid" title="Build Status">
+<!--   <a target="_blank" href="https://travis-ci.org/elmoiv/redvid" title="Build Status">
     <img src="https://api.travis-ci.org/elmoiv/redvid.svg?branch=master">
-  </a>
+  </a> -->
   <a target="_blank" href="https://pypi.org/project/redvid/" title="Python Version">
     <img src="https://img.shields.io/badge/python-3.x-brightgreen.svg">
+  </a>
+    <a target="_blank" href="https://pypi.org/project/redvid/" title="PyPi Total Downloads">
+    <img src="https://static.pepy.tech/badge/redvid">
   </a>
   <a target="_blank" href="https://github.com/elmoiv/redvid/releases" title="Current Version">
     <img src="https://img.shields.io/github/v/release/elmoiv/redvid.svg">
@@ -103,10 +106,10 @@ Here are a few sample tests:
   * [Skip file check and overwrite](https://github.com/elmoiv/redvid/tree/master/tests/test6.py)
   * [Silent download (No logging)](https://github.com/elmoiv/redvid/tree/master/tests/test7.py)
   * [Set maximum video size](https://github.com/elmoiv/redvid/tree/master/tests/test8.py)
-    * [Set maximum video size (different technique)](https://github.com/elmoiv/redvid/tree/master/tests/test9.py)
+  * [Set maximum video size (different technique)](https://github.com/elmoiv/redvid/tree/master/tests/test9.py)
   * [Set maximum video duration](https://github.com/elmoiv/redvid/tree/master/tests/test10.py)
-    * [Set maximum video duration (different technique)](https://github.com/elmoiv/redvid/tree/master/tests/test11.py)
-
+  * [Set maximum video duration (different technique)](https://github.com/elmoiv/redvid/tree/master/tests/test11.py)
+  * [Custom Filename](tests/test13.py)
 ## Console Commands
 ```console
 > redvid --help
@@ -124,6 +127,8 @@ optional arguments:
   -o, --overwrite       Overwrite existing videos and ignore exception
   -mxq, --maxquality    Auto select maximum quality
   -mnq, --minquality    Auto select minimum quality
+  -fn FILENAME, --filename FILENAME
+                        Set custom filename for downloaded video
   -mxd MAXDURATION, --maxduration MAXDURATION
                         Ignore videos that exceed this duration (in seconds)
   -mxs MAXSIZE, --maxsize MAXSIZE
@@ -135,7 +140,7 @@ optional arguments:
   -px PROXIES, --proxies PROXIES
                         Download videos through proxies for blocked regions
   -v, --version         Show redvid version
-  -c, --clean           Clean temp folder after download is done
+  -nc, --noclean        Don't clean temp folder after download is done
 ```
 
 ## Stargazers over time

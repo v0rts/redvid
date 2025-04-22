@@ -1,6 +1,8 @@
 from secrets import token_urlsafe
 from .requestmaker import Requester
 from .tools import *
+from uuid import uuid4
+
 __import__('warnings').filterwarnings("ignore")
 
 class Downloader(Requester):
@@ -22,6 +24,7 @@ class Downloader(Requester):
                 self,
                 url='',
                 path='',
+                filename='',
                 max_q=False,
                 min_q=False,
                 max_d=1e1000,
@@ -37,6 +40,7 @@ class Downloader(Requester):
         self.auto_max = auto_max
         self.auto_dir = auto_dir
         self.sizes_error = False
+        self.filename = filename  # Store the desired filename
         self.page = None
         self.overwrite = False
         self.ischeck = False
@@ -45,6 +49,7 @@ class Downloader(Requester):
         self.videos = []
         self.video, self.audio, self.file_name = '', '', ''
         self.duration, self.size = 0, 0
+        self.__unique_id = str(uuid4())
         
     def setup(self):
         """
@@ -76,7 +81,7 @@ class Downloader(Requester):
                             _proxies=self.proxies
                             )
         
-        if self.page.status_code is 200:
+        if self.page.status_code == 200:
             return True
         
         raise BaseException('Incorrect URL format')
@@ -98,8 +103,11 @@ class Downloader(Requester):
                         self.r_url + 'DASHPlaylist.mpd',
                         _proxies=self.proxies
                         )
+        
+        max_min_qualities = getMaxMinQualities(self.page, self.r_url)
+
         # v1.0.8: Fix new Reddit mechanism
-        VQS, AQS = mpdParse(mpd.text)
+        VQS, AQS = mpdParse(mpd.text, custom_video_qualities=max_min_qualities)
 
         if [VQS, AQS] == [0, 0]:
             raise BaseException('Qualities not found!')
@@ -114,13 +122,13 @@ class Downloader(Requester):
         """
         Downloads video to the current working directory
         """
-        self.pgbar(self.log, self.video, self.temp + 'video.mp4', '>> Video:')
+        self.pgbar(self.log, self.video, self.temp + self.__unique_id + 'video.mp4', '>> Video:')
 
     def get_audio(self):
         """
         Downloads audio to the current working directory
         """
-        self.pgbar(self.log, self.audio, self.temp + 'audio.m4a', '>> Audio:')
+        self.pgbar(self.log, self.audio, self.temp + self.__unique_id + 'audio.m4a', '>> Audio:')
 
     def get_and_mux(self):
         """
@@ -134,19 +142,19 @@ class Downloader(Requester):
             os.system(
                     'ffmpeg -hide_banner -loglevel panic -y -i "{0}video.mp4"'
                     ' -i "{0}audio.m4a" -vcodec copy -acodec copy "{0}av.mp4"'.format(
-                        self.temp
+                        self.temp + self.__unique_id
                     )
                 )
         else:
             os.system(
                     'ffmpeg -hide_banner -loglevel panic -y -i "{0}video.mp4"'
                     ' -vcodec copy "{0}av.mp4"'.format(
-                        self.temp
+                        self.temp + self.__unique_id
                     )
                 )
 
         # Moving video file without using shutil
-        os.rename(self.temp + 'av.mp4', self.file_name)
+        os.rename(self.temp + self.__unique_id + 'av.mp4', self.file_name)
 
         # Clean Temp folder
         Clean(self.temp)
@@ -199,10 +207,12 @@ class Downloader(Requester):
         
         self.video = self.r_url + quality
 
-        self.file_name = '{}{}-{}.mp4'.format(
+        self.file_name = '{}{}.mp4'.format(
                                     self.path,
-                                    self.UNQ,
-                                    quality
+                                    self.filename if self.filename else '-'.join(
+                                        [self.UNQ,
+                                        quality]
+                                    )
                                     # v1.0.8: fix file name dups
                                     ).replace('.mp4' * 2, '.mp4')
         
@@ -226,6 +236,8 @@ class Downloader(Requester):
             1: Duration exceeds maximum
             2: File exists
         """
+        self.__unique_id = str(uuid4())
+
         if not self.ischeck:
             self.check()
         self.ischeck = False

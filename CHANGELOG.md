@@ -1,3 +1,16 @@
+### v2.0.5 - 20-06-2024:
+  * [#42](https://github.com/elmoiv/redvid/pull/35) Fixed maximum and minimum video qualities not fetched.
+### v2.0.4 - 04-03-2024:
+  * [#39](https://github.com/elmoiv/redvid/issues/39) Fixed audio not downloaded due to new Reddit patches.
+### v2.0.3 - 27-11-2023:
+  * [#35](https://github.com/elmoiv/redvid/pull/35) Fixed random audio track given to videos with no audio track.
+  * Temp cleaning is now true by default. Use `-nc` or `--noclean` to save temp files.
+### v2.0.2 - 30-08-2023:
+  * [#34](https://github.com/elmoiv/redvid/pull/34) Added option to set custom filename.
+### v2.0.1 - 11-08-2023:
+  * [#33](https://github.com/elmoiv/redvid/pull/33) Fixed mixing up .vtt files with videos.
+### v2.0.0 - 07-08-2023:
+  * [#32](https://github.com/elmoiv/redvid/issues/32) Fixed fetching audio with the new Reddit architecture.
 ### v1.2.0 - 09-03-2022:
   * [#24](https://github.com/elmoiv/redvid/pull/24) Added support for parallel instances saving to same directory.
   * You can now call `redvid` directly from terminal with no need for `credvid.py`.
