@@ -1,3 +1,5 @@
+### v2.0.6 - 14-09-2025:
+  * [#51](https://github.com/elmoiv/redvid/pull/51) Fixed CMAF_ filename format not supported.
 ### v2.0.5 - 20-06-2024:
   * [#42](https://github.com/elmoiv/redvid/pull/35) Fixed maximum and minimum video qualities not fetched.
 ### v2.0.4 - 04-03-2024:
