@@ -76,7 +76,7 @@ def vcfRemover(BaseUrls, rgx):
 
 def mpdParse(mpd, custom_video_qualities=[]):
     # v2.0.1: Fix for new reddit mechanism
-    tags = r'<BaseURL>(DASH_)(?!vtt)(.*?)(\.mp4)?</BaseURL>'
+    tags = r'<BaseURL>(CMAF_|DASH_)(?!vtt)(.*?)(\.mp4)?</BaseURL>'
     tags_a = r'<BaseURL>(audio)(\.mp4)?</BaseURL>'
     re_tags = re.findall(tags, mpd) + re.findall(tags_a, mpd)
 
@@ -120,3 +120,4 @@ def UserSelect(lst):
 def Clean(path):
     # v1.1.2: Cleaner method for removing temp folder
     shutil.rmtree(path, ignore_errors=True)
+
