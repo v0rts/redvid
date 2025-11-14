@@ -56,7 +56,7 @@ def getSizes(u, h, p, vs):
     return sizes
 
 def getMaxMinQualities(page, vredd_url):
-    regex = rf'{vredd_url}(DASH_)(\d+)(\.mp4)'
+    regex = rf'{vredd_url}(CMAF_|DASH_)(\d+)(\.mp4)'
     Match = re.findall(regex, page.text)
     return Match
 
@@ -120,4 +120,5 @@ def UserSelect(lst):
 def Clean(path):
     # v1.1.2: Cleaner method for removing temp folder
     shutil.rmtree(path, ignore_errors=True)
+
 
