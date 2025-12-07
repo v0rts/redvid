@@ -56,7 +56,7 @@ def getSizes(u, h, p, vs):
     return sizes
 
 def getMaxMinQualities(page, vredd_url):
-    regex = rf'{vredd_url}(DASH_)(\d+)(\.mp4)'
+    regex = rf'{vredd_url}(CMAF_|DASH_)(\d+)(\.mp4)'
     Match = re.findall(regex, page.text)
     return Match
 
@@ -76,8 +76,8 @@ def vcfRemover(BaseUrls, rgx):
 
 def mpdParse(mpd, custom_video_qualities=[]):
     # v2.0.1: Fix for new reddit mechanism
-    tags = r'<BaseURL>(DASH_)(?!vtt)(.*?)(\.mp4)?</BaseURL>'
-    tags_a = r'<BaseURL>(audio)(\.mp4)?</BaseURL>'
+    tags = r'<BaseURL>(CMAF_|DASH_)(?!vtt)(.*?)(\.mp4)?</BaseURL>'
+    tags_a = r'<BaseURL>(CMAF_AUDIO_64|audio)(\.mp4)?</BaseURL>'
     re_tags = re.findall(tags, mpd) + re.findall(tags_a, mpd)
 
     # v1.1.1: Fix Base Urls from vcf.redd.it
@@ -120,3 +120,6 @@ def UserSelect(lst):
 def Clean(path):
     # v1.1.2: Cleaner method for removing temp folder
     shutil.rmtree(path, ignore_errors=True)
+
+
+
